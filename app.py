@@ -43,13 +43,26 @@ st.set_page_config(
 # 隐藏 Streamlit 所有默认 UI 元素
 hide_streamlit_ui = """
 <style>
-footer {display: none !important;}
-#MainMenu {display: none !important;}
-.stDeployButton {display: none !important;}
-[data-testid="stDecoration"] {display: none !important;}
-[data-testid="stToolbar"] {display: none !important;}
-[data-testid="manage_app_button"] {display: none !important;}
-div.stApp > header {display: none !important;}
+footer,
+.stApp footer,
+div[data-testid="stFooter"],
+div.st-emotion-cache-footer,
+#MainMenu,
+.stDeployButton,
+[data-testid="stDecoration"],
+[data-testid="stToolbar"],
+[data-testid="manage_app_button"],
+div.stApp > header,
+a[href*="streamlit.io"],
+a[href*="streamlit.app"][target="_blank"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+  position: absolute !important;
+  pointer-events: none !important;
+}
 </style>
 """
 st.markdown(hide_streamlit_ui, unsafe_allow_html=True)
