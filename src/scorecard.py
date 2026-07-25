@@ -66,16 +66,16 @@ def score_to_band(score: int | np.ndarray) -> str:
     else:
         return np.array([score_to_band(s) for s in score])
 
-    if s >= 800:
-        return "Exceptional (800-900)"
-    elif s >= 740:
-        return "Very Good (740-799)"
-    elif s >= 670:
-        return "Good (670-739)"
+    if s >= 650:
+        return "优秀 (650+)"
+    elif s >= 620:
+        return "良好 (620-649)"
     elif s >= 580:
-        return "Fair (580-669)"
+        return "中等 (580-619)"
+    elif s >= 500:
+        return "一般 (500-579)"
     else:
-        return "Poor (300-579)"
+        return "差 (300-499)"
 
 
 @dataclass
@@ -102,7 +102,7 @@ def make_loan_decision(
     """
     score = int(probability_to_score(pd_probability, config))
 
-    if score >= 720:
+    if score >= 650:
         return LoanDecision(
             credit_score=score,
             pd_probability=pd_probability,
@@ -110,7 +110,7 @@ def make_loan_decision(
             interest_rate="年利率 10.5%",
             risk_category="低风险",
         )
-    elif score >= 600:
+    elif score >= 580:
         return LoanDecision(
             credit_score=score,
             pd_probability=pd_probability,
