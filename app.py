@@ -40,6 +40,15 @@ st.set_page_config(
     layout="centered",
 )
 
+# 自动跳转到嵌入模式，去掉 Streamlit Cloud 查看器工具栏
+st.markdown("""
+<script>
+if (window.top === window.self && !window.location.search.includes('embed')) {
+  window.location.replace(window.location.origin + window.location.pathname + '?embed=true');
+}
+</script>
+""", unsafe_allow_html=True)
+
 # 隐藏 Streamlit 默认 UI 元素 — CSS 先手 + JS 后手双重删除
 st.markdown("""
 <style>
