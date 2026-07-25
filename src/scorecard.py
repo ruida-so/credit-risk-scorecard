@@ -20,8 +20,8 @@ from dataclasses import dataclass
 class ScorecardConfig:
     """评分卡参数"""
     pdo: int = 20            # odds 翻倍时分数变化量
-    base_score: int = 600   # 基础 odds 对应的分数
-    base_odds: int = 19     # 基础 good:bad 比率 (19:1)
+    base_score: int = 600    # 基础 odds 对应的分数
+    base_odds: int = 14      # 基础 good:bad 比率 (14:1 ≈ 6.68% PD，匹配真实数据)
     score_min: int = 300
     score_max: int = 900
 
@@ -106,23 +106,23 @@ def make_loan_decision(
         return LoanDecision(
             credit_score=score,
             pd_probability=pd_probability,
-            decision="APPROVED",
-            interest_rate="10.5% p.a.",
-            risk_category="Low Risk",
+            decision="批准",
+            interest_rate="年利率 10.5%",
+            risk_category="低风险",
         )
     elif score >= 600:
         return LoanDecision(
             credit_score=score,
             pd_probability=pd_probability,
-            decision="Conditional Approval",
-            interest_rate="15.5% p.a.",
-            risk_category="Medium Risk",
+            decision="有条件批准",
+            interest_rate="年利率 15.5%",
+            risk_category="中风险",
         )
     else:
         return LoanDecision(
             credit_score=score,
             pd_probability=pd_probability,
-            decision="Declined",
-            interest_rate="N/A",
-            risk_category="High Risk",
+            decision="拒绝",
+            interest_rate="不适用",
+            risk_category="高风险",
         )
