@@ -130,18 +130,18 @@ def make_loan_decision(
     # 敞口维度调整
     reason = ""
     if decision != "拒绝":
-        if expected_loss > 10000 or loan_to_income > 10.0:
+        if expected_loss > 8000 or loan_to_income > 5.0:
             decision = "拒绝"
             rate = "不适用"
             risk = "高风险"
-            reason = f"贷款敞口过高（预期损失 ${expected_loss:,.0f}, 贷款/年收入 {loan_to_income:.1%}）"
-        elif expected_loss > 3000 or loan_to_income > 5.0:
+            reason = f"贷款敞口过高（预期损失 ${expected_loss:,.0f}, 贷款/年收入 {loan_to_income:.0%}）"
+        elif expected_loss > 2000 or loan_to_income > 3.0:
             if decision == "批准":
                 decision = "有条件批准"
                 risk = "中风险"
-                reason = f"贷款敞口偏高（预期损失 ${expected_loss:,.0f}, 贷款/年收入 {loan_to_income:.1%}）"
+                reason = f"贷款敞口偏高（预期损失 ${expected_loss:,.0f}, 贷款/年收入 {loan_to_income:.0%}）"
             elif decision == "有条件批准":
-                reason = f"贷款敞口偏高（预期损失 ${expected_loss:,.0f}, 贷款/年收入 {loan_to_income:.1%}）"
+                reason = f"贷款敞口偏高（预期损失 ${expected_loss:,.0f}, 贷款/年收入 {loan_to_income:.0%}）"
 
     return LoanDecision(
         credit_score=score,
