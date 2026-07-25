@@ -1,7 +1,5 @@
 __pycache__/
 *.pyc
-*.pkl
-*.pkl.*
 .DS_Store
 .env
 *.egg-info/
@@ -9,3 +7,6 @@ dist/
 build/
 inspect_model.py
 inspect_model2.py
+git_setup.ps1
+push.ps1
+*.pkl.*
