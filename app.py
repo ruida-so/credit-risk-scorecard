@@ -40,43 +40,6 @@ st.set_page_config(
     layout="centered",
 )
 
-# 自动跳转到嵌入模式，去掉 Streamlit Cloud 查看器工具栏
-st.markdown("""
-<script>
-if (window.top === window.self && !window.location.search.includes('embed')) {
-  window.location.replace(window.location.origin + window.location.pathname + '?embed=true');
-}
-</script>
-""", unsafe_allow_html=True)
-
-# 隐藏 Streamlit 默认 UI 元素 — CSS 先手 + JS 后手双重删除
-st.markdown("""
-<style>
-footer, #MainMenu, .stDeployButton,
-[data-testid="stDecoration"], [data-testid="stToolbar"],
-[data-testid="manage_app_button"], div.stApp > header,
-a[href*="streamlit.io"], a[href*="streamlit.app"][target="_blank"] {
-  display: none !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
-import streamlit.components.v1 as components
-components.html("""
-<script>
-(function clean() {
-  const sel = 'footer, #MainMenu, .stDeployButton, [data-testid="stDecoration"], [data-testid="stToolbar"], [data-testid="manage_app_button"], a[href*="streamlit"], [data-testid="stAppViewer"], [data-testid="stAppViewerToolbar"], .stViewerToolbar, .stAppViewer, [class*="viewer"], [class*="Viewer"]';
-  document.querySelectorAll(sel).forEach(e => e.remove());
-  document.querySelectorAll('*').forEach(e => {
-    if (e.childNodes.length === 1 && e.textContent && /(Streamlit|Made with|Shared by|Viewer)/.test(e.textContent)) {
-      e.remove();
-    }
-  });
-  setTimeout(clean, 2000);
-})();
-</script>
-""", height=0)
-
 st.title("🏦 Credit Risk Scorecard — IFRS 9")
 st.write("输入借款人信息，实时获取 PD、信用评分和贷款决策。")
 
