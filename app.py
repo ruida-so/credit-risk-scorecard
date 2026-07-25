@@ -40,14 +40,19 @@ st.set_page_config(
     layout="centered",
 )
 
-# 隐藏 Streamlit 默认页脚和右下角标识
-hide_footer = """
+# 隐藏 Streamlit 所有默认 UI 元素
+hide_streamlit_ui = """
 <style>
-footer {visibility: hidden;}
-#MainMenu {visibility: hidden;}
+footer {display: none !important;}
+#MainMenu {display: none !important;}
+.stDeployButton {display: none !important;}
+[data-testid="stDecoration"] {display: none !important;}
+[data-testid="stToolbar"] {display: none !important;}
+[data-testid="manage_app_button"] {display: none !important;}
+div.stApp > header {display: none !important;}
 </style>
 """
-st.markdown(hide_footer, unsafe_allow_html=True)
+st.markdown(hide_streamlit_ui, unsafe_allow_html=True)
 
 st.title("🏦 Credit Risk Scorecard — IFRS 9")
 st.write("输入借款人信息，实时获取 PD、信用评分和贷款决策。")
