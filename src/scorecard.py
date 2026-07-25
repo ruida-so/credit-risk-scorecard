@@ -86,43 +86,70 @@ class LoanDecision:
     decision: str
     interest_rate: str
     risk_category: str
+    expected_loss: float = 0.0
+    loan_to_income: float = 0.0
+    rejection_reason: str = ""
 
 
 def make_loan_decision(
     pd_probability: float,
+    loan_amount: float = 10000,
+    monthly_income: float = 5000,
     config: ScorecardConfig | None = None,
 ) -> LoanDecision:
     """
-    根据违约概率做出贷款决策
+    根据违约概率 + 贷款金额做出贷款决策
 
-    决策规则:
-      score >= 720: 批准 (低风险)
-      600-719:      有条件批准 (中风险)
-      < 600:        拒绝 (高风险)
+    两维判断：
+      1. 信用评分 (来自 PD)
+      2. 预期损失 = PD × 贷款金额；贷款收入比 = 贷款金额 ÷ 年收入
+
+    规则：
+      - 预期损失 > $3,000 或 贷款收入比 > 500% → 降一级
+      - 预期损失 > $10,000 或 贷款收入比 > 1000% → 直接拒绝
     """
+    annual_income = monthly_income * 12
+    loan_to_income = loan_amount / max(annual_income, 1)
+    expected_loss = pd_probability * loan_amount
+
     score = int(probability_to_score(pd_probability, config))
 
     if score >= 650:
-        return LoanDecision(
-            credit_score=score,
-            pd_probability=pd_probability,
-            decision="批准",
-            interest_rate="年利率 10.5%",
-            risk_category="低风险",
-        )
+        decision = "批准"
+        rate = "年利率 10.5%"
+        risk = "低风险"
     elif score >= 580:
-        return LoanDecision(
-            credit_score=score,
-            pd_probability=pd_probability,
-            decision="有条件批准",
-            interest_rate="年利率 15.5%",
-            risk_category="中风险",
-        )
+        decision = "有条件批准"
+        rate = "年利率 15.5%"
+        risk = "中风险"
     else:
-        return LoanDecision(
-            credit_score=score,
-            pd_probability=pd_probability,
-            decision="拒绝",
-            interest_rate="不适用",
-            risk_category="高风险",
-        )
+        decision = "拒绝"
+        rate = "不适用"
+        risk = "高风险"
+
+    # 敞口维度调整
+    reason = ""
+    if decision != "拒绝":
+        if expected_loss > 10000 or loan_to_income > 10.0:
+            decision = "拒绝"
+            rate = "不适用"
+            risk = "高风险"
+            reason = f"贷款敞口过高（预期损失 ${expected_loss:,.0f}, 贷款/年收入 {loan_to_income:.1%}）"
+        elif expected_loss > 3000 or loan_to_income > 5.0:
+            if decision == "批准":
+                decision = "有条件批准"
+                risk = "中风险"
+                reason = f"贷款敞口偏高（预期损失 ${expected_loss:,.0f}, 贷款/年收入 {loan_to_income:.1%}）"
+            elif decision == "有条件批准":
+                reason = f"贷款敞口偏高（预期损失 ${expected_loss:,.0f}, 贷款/年收入 {loan_to_income:.1%}）"
+
+    return LoanDecision(
+        credit_score=score,
+        pd_probability=pd_probability,
+        decision=decision,
+        interest_rate=rate,
+        risk_category=risk,
+        expected_loss=expected_loss,
+        loan_to_income=loan_to_income,
+        rejection_reason=reason,
+    )

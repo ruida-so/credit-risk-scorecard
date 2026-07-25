@@ -131,7 +131,7 @@ if st.button("评估信用风险", type="primary"):
 
     # 评分卡
     score = int(probability_to_score(pd_prob))
-    decision = make_loan_decision(pd_prob)
+    decision = make_loan_decision(pd_prob, loan_amount, monthly_income)
 
     # ECL 计算
     lgd = LGD_TABLE[loan_type]
@@ -148,6 +148,9 @@ if st.button("评估信用风险", type="primary"):
 
     st.write(f"风险等级: **{decision.risk_category}**")
     st.write(f"建议利率: **{decision.interest_rate}**")
+    st.write(f"预期损失: **\${decision.expected_loss:,.0f}** (PD × 贷款金额)")
+    if decision.rejection_reason:
+        st.warning(f"\u26a0\ufe0f {decision.rejection_reason}")
 
     # ── 风险仪表盘 ──
     st.markdown("### 风险仪表盘")
