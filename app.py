@@ -40,32 +40,33 @@ st.set_page_config(
     layout="centered",
 )
 
-# 隐藏 Streamlit 所有默认 UI 元素
-hide_streamlit_ui = """
+# 隐藏 Streamlit 默认 UI 元素 — CSS 先手 + JS 后手双重删除
+st.markdown("""
 <style>
-footer,
-.stApp footer,
-div[data-testid="stFooter"],
-div.st-emotion-cache-footer,
-#MainMenu,
-.stDeployButton,
-[data-testid="stDecoration"],
-[data-testid="stToolbar"],
-[data-testid="manage_app_button"],
-div.stApp > header,
-a[href*="streamlit.io"],
-a[href*="streamlit.app"][target="_blank"] {
+footer, #MainMenu, .stDeployButton,
+[data-testid="stDecoration"], [data-testid="stToolbar"],
+[data-testid="manage_app_button"], div.stApp > header,
+a[href*="streamlit.io"], a[href*="streamlit.app"][target="_blank"] {
   display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  height: 0 !important;
-  width: 0 !important;
-  position: absolute !important;
-  pointer-events: none !important;
 }
 </style>
-"""
-st.markdown(hide_streamlit_ui, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
+
+import streamlit.components.v1 as components
+components.html("""
+<script>
+(function clean() {
+  const sel = 'footer, #MainMenu, .stDeployButton, [data-testid="stDecoration"], [data-testid="stToolbar"], [data-testid="manage_app_button"], a[href*="streamlit"]';
+  document.querySelectorAll(sel).forEach(e => e.remove());
+  document.querySelectorAll('*').forEach(e => {
+    if (e.childNodes.length === 1 && e.textContent && /(Streamlit|Made with)/.test(e.textContent)) {
+      e.remove();
+    }
+  });
+  setTimeout(clean, 2000);
+})();
+</script>
+""", height=0)
 
 st.title("🏦 Credit Risk Scorecard — IFRS 9")
 st.write("输入借款人信息，实时获取 PD、信用评分和贷款决策。")
