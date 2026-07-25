@@ -56,10 +56,10 @@ import streamlit.components.v1 as components
 components.html("""
 <script>
 (function clean() {
-  const sel = 'footer, #MainMenu, .stDeployButton, [data-testid="stDecoration"], [data-testid="stToolbar"], [data-testid="manage_app_button"], a[href*="streamlit"]';
+  const sel = 'footer, #MainMenu, .stDeployButton, [data-testid="stDecoration"], [data-testid="stToolbar"], [data-testid="manage_app_button"], a[href*="streamlit"], [data-testid="stAppViewer"], [data-testid="stAppViewerToolbar"], .stViewerToolbar, .stAppViewer, [class*="viewer"], [class*="Viewer"]';
   document.querySelectorAll(sel).forEach(e => e.remove());
   document.querySelectorAll('*').forEach(e => {
-    if (e.childNodes.length === 1 && e.textContent && /(Streamlit|Made with)/.test(e.textContent)) {
+    if (e.childNodes.length === 1 && e.textContent && /(Streamlit|Made with|Shared by|Viewer)/.test(e.textContent)) {
       e.remove();
     }
   });
