@@ -40,6 +40,15 @@ st.set_page_config(
     layout="centered",
 )
 
+# 隐藏 Streamlit 默认页脚和右下角标识
+hide_footer = """
+<style>
+footer {visibility: hidden;}
+#MainMenu {visibility: hidden;}
+</style>
+"""
+st.markdown(hide_footer, unsafe_allow_html=True)
+
 st.title("🏦 Credit Risk Scorecard — IFRS 9")
 st.write("输入借款人信息，实时获取 PD、信用评分和贷款决策。")
 
@@ -83,9 +92,9 @@ col_left, col_right = st.columns(2)
 with col_left:
     age = st.slider("年龄", 18, 80, 35)
     credit_utilization = st.slider("信用卡使用率", 0.0, 1.0, 0.3, step=0.01)
-    late_30 = st.number_input("30-59天逾期次数", 0, 10, 0)
-    late_60 = st.number_input("60-89天逾期次数", 0, 10, 0)
-    late_90 = st.number_input("90天+逾期次数", 0, 10, 0)
+    late_30 = st.number_input("30-59天逾期次数", 0, 30, 0)
+    late_60 = st.number_input("60-89天逾期次数", 0, 30, 0)
+    late_90 = st.number_input("90天+逾期次数", 0, 30, 0)
     monthly_income = st.number_input("月收入 ($)", 1000, 200000, 5000, step=500)
 
 with col_right:
